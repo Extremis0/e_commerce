@@ -12,21 +12,20 @@ public class UserService {
     @Autowired
     private LocalUserDAO localUserDAO;
 
-   @Autowired
+    @Autowired
     private EncryptionService encryptionService;
 
     public LocalUser registeruser(RegistrationBody registrationBody) throws UserAlreadyExistsException {
-        if ( localUserDAO.findByEmailIgnoreCase(registrationBody.getEmail()).isPresent()
-                 || localUserDAO.findByUsernameIgnoreCase(registrationBody.getUsername()).isPresent())
-        {
-         throw  new UserAlreadyExistsException();
+        if (localUserDAO.findByEmailIgnoreCase(registrationBody.getEmail()).isPresent()
+                || localUserDAO.findByUsernameIgnoreCase(registrationBody.getUsername()).isPresent()) {
+            throw new UserAlreadyExistsException();
         }
-        LocalUser user =new LocalUser();
+        LocalUser user = new LocalUser();
         user.setEmail(registrationBody.getEmail());
         user.setFirstName(registrationBody.getFirstName());
         user.setLastName(registrationBody.getLastName());
         user.setUsername(registrationBody.getUsername());
-        user.setPassword(  encryptionService.encryptPassword(registrationBody.getPassword()));
+        user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
 
         return localUserDAO.save(user);
     }
